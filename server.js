@@ -28,6 +28,7 @@ mongoose
     console.log('DB Connection Successful');
   });
 
+//On heroku its necessary to have process.env.PORT
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
@@ -40,6 +41,13 @@ process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! Shutting down...');
   server.close(() => {
     process.exit(1); //1 stands for uncaught exception
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECEIVED, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
   });
 });
 

@@ -12,24 +12,18 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
   const timeFormula = 24 * 60 * 60 * 1000; //24 hours, 60 minutes, 60 seconds, 1000 milliseconds
-  const cookieOptions = {
+
+  res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * timeFormula
     ),
     // secure: true, //cookie will be sent on encrypted connection; https
     httpOnly: true, //browser cannot modify cookie
-  };
-
-  //in production mode cookie.secure is set to true since production is in https
-  //otherwise in http it is set to false
-  if (process.env.NODE_ENV === 'production') {
-    cookieOptions.secure = true;
-  }
-
-  res.cookie('jwt', token, cookieOptions);
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+  });
 
   //remove the password from output in response
   user.password = undefined;
@@ -57,7 +51,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   await new Email(newUser, url).sendWelcome();
 
   //JWT SignIn function
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -81,7 +75,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //3) If everything is okay, send token to client
   //_id is used for MongoDB ids, that is why user._id instead of user.id
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 //since we cannot modify/delete cookie in our browser, this workaround creates a logout route
@@ -252,7 +246,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // Implemented in userModel with the same comment as above
 
   // 4) Log the user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -272,7 +266,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   //User.findByIdAndUpdate will not work as intended!
 
   // 4) Log user in, send JWT with new password
-  createSendToken(user, 201, res);
+  createSendToken(user, 201, req, res);
 });
 
 //My updatePassword Implementation

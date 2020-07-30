@@ -21,6 +21,10 @@ const viewRouter = require('./routes/viewRoutes');
 // Start express app
 const app = express();
 
+//By enabling the "trust proxy" setting via app.enable('trust proxy'), Express will have knowledge that it's sitting
+//behind a proxy and that the X-Forwarded-* header fields may be trusted, which otherwise may be easily spoofed
+app.enable('trust proxy');
+
 //setting template engine to pug; views are View in MVC architecture
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
