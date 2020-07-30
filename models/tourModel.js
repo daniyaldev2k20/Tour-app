@@ -169,10 +169,10 @@ tourSchema.pre(/^find/, function (next) {
 
 //Mongoose QUERY MIDDLEWARE: a post-find hook, a middleware that is gonna run after
 //pre-middleware and has access to document retrieved from database
-tourSchema.post(/^find/, function (doc, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  next();
-});
+// tourSchema.post(/^find/, function (doc, next) {
+//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
 
 // //Mongoose Aggregation Middleware; a pre-middleware
 // tourSchema.pre('aggregate', function (next) {

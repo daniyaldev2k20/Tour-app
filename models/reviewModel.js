@@ -67,7 +67,7 @@ reviewSchema.statics.calAvgRatings = async function (tourId) {
     },
   ]);
 
-  console.log(stats);
+  // console.log(stats);
 
   //if reviews for a tour exists then stats array will return length > 0 else not
   if (stats.length > 0) {
@@ -96,7 +96,7 @@ reviewSchema.pre(/^findOneAnd/, async function (next) {
   //this keyword points to current query being run
   //this.reviewDoc is property set on this keyword and then passed to next query post middleware
   this.reviewDoc = await this.findOne();
-  console.log(this.reviewDoc);
+  // console.log(this.reviewDoc);
   next();
 });
 
