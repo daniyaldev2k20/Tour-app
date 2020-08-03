@@ -17,6 +17,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRoutes');
 
 // Start express app
@@ -58,6 +59,14 @@ const limiter = rateLimit({
 });
 //limiter is applied to routes starting with URL /api
 app.use('/api', limiter);
+
+//Implementing Stripe webhooks route; reason its implemented here and not in bookRoutes was
+//due to Stripe function reading body in raw form; stream not in JSON; below middlewares convert to JSON
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 // Body parser, reading data from body into req.body
 //limits body to 10kb
