@@ -60,8 +60,7 @@ const limiter = rateLimit({
 //limiter is applied to routes starting with URL /api
 app.use('/api', limiter);
 
-//Implementing Stripe webhooks route; reason its implemented here and not in bookRoutes was
-//due to Stripe function reading body in raw form; stream not in JSON; below middlewares convert to JSON
+// Stripe webhook, BEFORE body-parser, because stripe needs the body as stream
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
