@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -30,7 +31,11 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 //1) GLOBAL MIDDLEWARES
-//in app.use we always need a function, not a function call
+// Implement Cross-Origin-Resource-Sharing which ensures Access-Control-Allow-Origin for every request
+app.use(cors());
+
+//For non-simple requests; patch, delete, different headers, cookies during pre-flight phase in Browser
+app.options('*', cors());
 
 // Serving static files
 //path.join ensures that no error occurs due to / occurs or not, Node.js will automatically create a path
