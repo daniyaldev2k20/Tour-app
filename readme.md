@@ -10,4 +10,7 @@
  
  **Running App**
  1) run npm dev for development
- 2) run npm prod for production
+ 2) run npm prod for production  
+ 
+ **Demo**  
+ https://tourappnodejs.herokuapp.com/
